@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.15)
+project(Project)
+
+set(CMAKE_CXX_STANDARD 17)
+
+add_executable(Project main.cpp smart_naturals/smart_naturals.h smart_functional/smart_functional.h smart_functional/smart_functional.cpp smart_naturals/smart_naturals.cpp smart_integral/smart_integral.h smart_functional/smart_functional_additional.h smart_integral/smart_integral.cpp smart_rational/smart_rational.h smart_rational/smart_rational.cpp smart_polynomial/smart_polynomial.h smart_polynomial/smart_polynomial.cpp smart_functional/smart_functional_additional.cpp)
