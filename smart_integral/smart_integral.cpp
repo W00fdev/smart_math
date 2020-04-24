@@ -20,10 +20,11 @@ Natural Integral::ABS_Z_N() const {
 */
 
 int Integral::POZ_Z_D() const {
-    if(minus)
+    int flag = ABS_Z_N().NZER_N_B();
+    if(minus && flag)  // minus && !0
         return 1; // < 0
 
-    return 2 * (int)(this->ABS_Z_N().NZER_N_B());  // >0 || 0
+    return 2 * flag;  // >0 || 0
 }
 
 /*  [Z - 3]
@@ -32,7 +33,9 @@ int Integral::POZ_Z_D() const {
 */
 
 Integral& Integral::MUL_ZM_Z() {
-    minus = !minus;
+    if (ABS_Z_N().NZER_N_B())
+        minus = !minus;
+
     return *this;
 }
 
@@ -145,7 +148,7 @@ Integral& Integral::DIV_ZZ_Z(const Integral& rhs) {
 
     bool final_minus = minus;
 
-    if (flag != flag_for_rhs)
+    if (flag_for_rhs == 1)      // второй множитель < 0
         final_minus = !final_minus; // определим знак результата
 
     const Natural natural_one("1");     // проверка на единицу

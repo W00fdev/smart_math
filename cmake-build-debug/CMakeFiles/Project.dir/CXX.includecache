@@ -6,31 +6,9 @@
 
 #IncludeRegexTransform: 
 
-/home/shift/Desktop/Discreth math/Project/main.cpp
-iostream
--
-string
--
-smart_polynomial/smart_polynomial.h
-/home/shift/Desktop/Discreth math/Project/smart_polynomial/smart_polynomial.h
-smart_functional/smart_functional.h
-/home/shift/Desktop/Discreth math/Project/smart_functional/smart_functional.h
-smart_functional/smart_functional_additional.h
-/home/shift/Desktop/Discreth math/Project/smart_functional/smart_functional_additional.h
-
 /home/shift/Desktop/Discreth math/Project/smart_functional/smart_functional.h
 string
 -
-
-/home/shift/Desktop/Discreth math/Project/smart_functional/smart_functional_additional.cpp
-smart_functional_additional.h
-/home/shift/Desktop/Discreth math/Project/smart_functional/smart_functional_additional.h
-
-/home/shift/Desktop/Discreth math/Project/smart_functional/smart_functional_additional.h
-iostream
--
-../smart_polynomial/smart_polynomial.h
-/home/shift/Desktop/Discreth math/Project/smart_polynomial/smart_polynomial.h
 
 /home/shift/Desktop/Discreth math/Project/smart_integral/smart_integral.h
 deque
@@ -55,16 +33,6 @@ cstdint
 -
 utility
 -
-../smart_functional/smart_functional.h
-/home/shift/Desktop/Discreth math/Project/smart_functional/smart_functional.h
-
-/home/shift/Desktop/Discreth math/Project/smart_polynomial/smart_polynomial.cpp
-smart_polynomial.h
-/home/shift/Desktop/Discreth math/Project/smart_polynomial/smart_polynomial.h
-
-/home/shift/Desktop/Discreth math/Project/smart_polynomial/smart_polynomial.h
-../smart_rational/smart_rational.h
-/home/shift/Desktop/Discreth math/Project/smart_rational/smart_rational.h
 ../smart_functional/smart_functional.h
 /home/shift/Desktop/Discreth math/Project/smart_functional/smart_functional.h
 

@@ -63,7 +63,6 @@ bool Rational::INT_Q_B() const {
     reduced_copy.RED_Q_Q();
 
     return reduced_copy.getDenominator() == Natural{"1"} != 0;
-
 }
 
 /*  [Q - 3]
@@ -89,7 +88,7 @@ Integral Rational::TRANS_Q_Z(const Rational& n) const {
 
     Integral i_numerator = a.getNumerator();
     Integral i_denominator = i_numerator.TRANS_N_Z(a.getDenominator());
-    return i_numerator.DIV_ZZ_Z(i_numerator);
+    return i_numerator.DIV_ZZ_Z(i_denominator);
 }
 
 /*  [Q - 5]

@@ -43,50 +43,52 @@ int main(int argc, char *argv[]) {
 
     // Функции-методы объектов изменяют объект, т.е [n1.ADD_NN_N(n2);] == [n1 = ADD_NN_N(n1, n2);]
     // Когда глобальные функции не изменяют объектов.
+//
+//    cout << "TEST FUNCTIONAL:\n\nNaturals:\n\n";
+//
+//    Natural n1 {"100"};
+//    Natural n2 {"55"};
+//    cout << n1 << " + " << n2 << " = " << n1.ADD_NN_N(n2) << endl;
+//    cout << n1 << " - " << n2 << " = " << n1.SUB_NN_N(n2) << endl;
+//    cout << n1 << " * " << n2 << " = " << n1.MUL_NN_N(n2) << endl;
+//    cout << n1 << " / " << n2 << " = " << n1.DIV_NN_N(n2) << endl;
+//    cout << n1 << " % " << n2 << " = " << n1.MOD_NN_N(n2) << endl;
+//    cout << n1 << " gcd " << n2 << " = " << n1.GCF_NN_N(n2) << endl;
+//    cout << n1 << " lcm " << n2 << " = " << n1.LCM_NN_N(n2) << endl;
+//
+//    cout << "\n\nIntegral:\n\n";
+//
+//    Integral i1 {"100"};
+//    Integral i2 {"-55"};
+//    cout << i1 << " + " << i2 << " = " << i1.ADD_ZZ_Z(i2) << endl;
+//    cout << i1 << " - " << i2 << " = " << i1.SUB_ZZ_Z(i2) << endl;
+//    cout << i1 << " * " << i2 << " = " << i1.MUL_ZZ_Z(i2) << endl;
+//    cout << i1 << " / " << i2 << " = " << i1.DIV_ZZ_Z(i2) << endl;
+//    cout << i1 << " % " << i2 << " = " << i1.MOD_ZZ_Z(i2) << endl;
+//
+//    cout << "\n\nRational:\n\n";
+//
+//
+//    Rational r1 {"100/3"};
+//    Rational r2 {"55/2"};
+//    cout << r1 << " + " << r2 << " = " << r1.ADD_QQ_Q(r2) << endl;
+//    cout << r1 << " - " << r2 << " = " << r1.SUB_QQ_Q(r2) << endl;
+//    cout << r1 << " * " << r2 << " = " << r1.MUL_QQ_Q(r2) << endl;
+//    cout << r1 << " / " << r2 << " = " << r1.DIV_QQ_Q(r2) << endl;
+//
+//    cout << "\n\nPolynomial:\n\n";
+//
+//
+//    Polynomial p1 {"100 -10 0 -1"};
+//    Polynomial p2 {"2 -3"};
+//    cout << "[" << p1 << "]" << " + " << "[" << p2 << "] = " << p1.ADD_PP_P(p2) << endl;
+//    cout << "[" << p1 << "]"  << " - " << "[" << p2 << "] = " << p1.SUB_PP_P(p2) << endl;
+//    cout << "[" << p1 << "]"  << " * " << "[" << p2 << "] = " << p1.MUL_PP_P(p2) << endl;
+//    cout << "[" << p1 << "]"  << " / " << "[" << p2 << "] = " << p1.DIV_PP_P(p2) << endl;
+//
 
-    cout << "TEST FUNCTIONAL:\n\nNaturals:\n\n";
-
-    Natural n1 {"100"};
-    Natural n2 {"55"};
-    cout << n1 << " + " << n2 << " = " << n1.ADD_NN_N(n2) << endl;
-    cout << n1 << " - " << n2 << " = " << n1.SUB_NN_N(n2) << endl;
-    cout << n1 << " * " << n2 << " = " << n1.MUL_NN_N(n2) << endl;
-    cout << n1 << " / " << n2 << " = " << n1.DIV_NN_N(n2) << endl;
-    cout << n1 << " % " << n2 << " = " << n1.MOD_NN_N(n2) << endl;
-    cout << n1 << " gcd " << n2 << " = " << n1.GCF_NN_N(n2) << endl;
-    cout << n1 << " lcm " << n2 << " = " << n1.LCM_NN_N(n2) << endl;
-
-    cout << "\n\nIntegral:\n\n";
-
-    Integral i1 {"100"};
-    Integral i2 {"-55"};
-    cout << i1 << " + " << i2 << " = " << i1.ADD_ZZ_Z(i2) << endl;
-    cout << i1 << " - " << i2 << " = " << i1.SUB_ZZ_Z(i2) << endl;
-    cout << i1 << " * " << i2 << " = " << i1.MUL_ZZ_Z(i2) << endl;
-    cout << i1 << " / " << i2 << " = " << i1.DIV_ZZ_Z(i2) << endl;
-    cout << i1 << " % " << i2 << " = " << i1.MOD_ZZ_Z(i2) << endl;
-
-    cout << "\n\nRational:\n\n";
-
-
-    Rational r1 {"100/3"};
-    Rational r2 {"55/2"};
-    cout << r1 << " + " << r2 << " = " << r1.ADD_QQ_Q(r2) << endl;
-    cout << r1 << " - " << r2 << " = " << r1.SUB_QQ_Q(r2) << endl;
-    cout << r1 << " * " << r2 << " = " << r1.MUL_QQ_Q(r2) << endl;
-    cout << r1 << " / " << r2 << " = " << r1.DIV_QQ_Q(r2) << endl;
-
-    cout << "\n\nPolynomial:\n\n";
-
-
-    Polynomial p1 {"100 -10 0 -1"};
-    Polynomial p2 {"2 -3"};
-    cout << "[" << p1 << "]" << " + " << "[" << p2 << "] = " << p1.ADD_PP_P(p2) << endl;
-    cout << "[" << p1 << "]"  << " - " << "[" << p2 << "] = " << p1.SUB_PP_P(p2) << endl;
-    cout << "[" << p1 << "]"  << " * " << "[" << p2 << "] = " << p1.MUL_PP_P(p2) << endl;
-    cout << "[" << p1 << "]"  << " / " << "[" << p2 << "] = " << p1.DIV_PP_P(p2) << endl;
-
-
-
+    Rational r1("10/3");
+    Integral i1 = r1.TRANS_Q_Z(r1);
+    cout << i1 << endl;
     return 0;
 }
