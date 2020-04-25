@@ -61,18 +61,21 @@ bool Polynomial::NZER_P_B() {
 
 Polynomial& Polynomial::ADD_PP_P(const Polynomial& p) {
     if (p.getRawDeg() == 0) return *this;
-
+    uint64_t offset = 0u;
     std::deque<Rational> operating_odds;
     if (deg > p.getRawDeg()) {
+        offset = deg - p.getRawDeg();
         operating_odds = p.getRawOdds();
 
     } else {
+        offset = p.getRawDeg() - deg;
         operating_odds = odds;
         odds = p.getRawOdds();
+        deg = p.getRawDeg();
     }
 
     for (int64_t i = operating_odds.size() - 1; i >= 0; i--) {
-        odds[i].ADD_QQ_Q(operating_odds[i]);
+        odds[i + offset].ADD_QQ_Q(operating_odds[i]);
     }
 
     // Это ведь дроби! могут быть обратные
@@ -224,6 +227,59 @@ Polynomial& Polynomial::DIV_PP_P(const Polynomial& p) {
         MakeNull();
     } else {
         uint64_t offset = deg - p.getRawDeg();
+        uint64_t stable_deg = deg;
+        Polynomial res;
+        for (uint64_t i = 0; i < stable_deg; i++) {
+            // делим каждый наш член
+            // (10x^2 + 5x - 3) / (x - 1)
+
+            Polynomial temp_p = p;
+            temp_p.MUL_Pxk_P(offset);
+            Rational divided = DIV_QQ_Q(odds[0], temp_p.LED_P_Q());    // делим i-ый левый на первый правый
+            // т.к мы точно домножаем до нуля, то степень *this уменьшается и актуальный odd всегда нулевой
+            temp_p.MUL_PQ_P(divided);
+            SUB_PP_P(temp_p);
+
+            std::deque<Rational> res_deq;
+            res_deq.push_back(divided);
+            res.ADD_PP_P(Polynomial(res_deq, res_deq.size()).MUL_Pxk_P(offset) );
+
+            if (offset == 0) {
+                break;
+            }
+            offset--;
+
+            // Домножить на 10^offset
+            // offset--
+            // Поделить Дробь a на b = с
+            // домножить временный полином на с
+            // вычесть из a c
+            // -> следующий круг
+        }
+        *this = res;
+    }
+
+    return *this;
+}
+
+/*
+    Автор модуля.
+    Краткое описание модуля...
+    Ссылки на документацию, использованную при разработке.
+*/
+// [P - 10]
+Polynomial& Polynomial::MOD_PP_P(const Polynomial& p) {
+    if (deg == 0) return *this;
+    else if (p.DEG_P_N() == Natural{0}) return *this;
+
+    //Integral result;
+    if (deg < p.getRawDeg()) {
+        // если степень левого < степени правого
+        // то деление = 0
+        MakeNull();
+    } else {
+        uint64_t offset = deg - p.getRawDeg();
+        Polynomial res;
         for (uint64_t i = 0; i < deg; i++) {
             // делим каждый наш член
 
@@ -231,8 +287,8 @@ Polynomial& Polynomial::DIV_PP_P(const Polynomial& p) {
 
             Polynomial temp_p = p;
             temp_p.MUL_Pxk_P(offset);
-            Integral divided = TRANS_Q_Z(DIV_QQ_Q(odds[i], temp_p.LED_P_Q()));    // делим i-ый левый на первый правый
-            temp_p.MUL_PQ_P(Rational(divided));
+            Rational divided = DIV_QQ_Q(odds[i], temp_p.LED_P_Q());    // делим i-ый левый на первый правый
+            temp_p.MUL_PQ_P(divided);
             SUB_PP_P(temp_p);
 
             if (offset == 0) {
@@ -258,30 +314,24 @@ Polynomial& Polynomial::DIV_PP_P(const Polynomial& p) {
     Краткое описание модуля...
     Ссылки на документацию, использованную при разработке.
 */
-// [P - 10]
-Polynomial& Polynomial::MOD_PP_P(const Polynomial&) {
-    // использовать [P - 2][P - 8][P - 9]
-    return *this;
-}
-
-/*
-    Автор модуля.
-    Краткое описание модуля...
-    Ссылки на документацию, использованную при разработке.
-*/
 // [P - 11]
 Polynomial Polynomial::GCF_PP_P(const Polynomial&) const {
     // использовать [P - 6][P - 10]
     return Polynomial{};
 }
 
-/*
-    Автор модуля.
-    Краткое описание модуля...
-    Ссылки на документацию, использованную при разработке.
+/*  [P - 12]
+    Архипов Михаил
+    Взятие производной
 */
-// [P - 12]
-[[nodiscard]] Polynomial& Polynomial::DER_PP_P() {
+
+Polynomial& Polynomial::DER_PP_P() {
+    std::deque<Rational> Derivative;
+    for (int64_t i = 0; i < deg-2; i++) {
+        Derivative.emplace_back(odds[i].MUL_QQ_Q(Rational{ Integral{deg-1-i},Natural{1} }));
+    }
+    odds = Derivative;
+    deg = odds.size();
     return *this;
 }
 

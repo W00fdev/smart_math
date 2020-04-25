@@ -101,9 +101,15 @@ public:
     [[nodiscard]] std::deque<Rational> getRawOdds() const { return odds; }
     [[nodiscard]] std::deque<Rational>& getRawOdds_nc() { return odds; } // nc - not const
 
-    Polynomial& operator=(const std::string& string_num);
+    Polynomial& operator=(const Polynomial & num) {
+        odds = num.getRawOdds();
+        deg = num.getRawDeg();
+    }
 
-    Polynomial& operator=(const Polynomial & num);
+    Polynomial& operator=(const std::string& string_num) {
+        parser_foundation(string_num);
+    }
+
 
     bool operator==(const Polynomial& other) const {
         return deg == other.getRawDeg() && odds == other.getRawOdds();
