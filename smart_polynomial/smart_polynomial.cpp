@@ -226,7 +226,7 @@ Polynomial& Polynomial::DIV_PP_P(const Polynomial& p) {
 
     if (deg == 0) return *this;
     else if (p.DEG_P_N() == Natural{ 0 }) return *this;
-
+  
     //Integral result;
     if (deg < p.getRawDeg()) {
         // если степень левого < степени правого
@@ -290,9 +290,12 @@ Polynomial& Polynomial::MOD_PP_P(const Polynomial& p) {
         // *this(n) = p(n)*priv(n) +r(n)
         // r(n) = *this(n) - p(n)*priv(n)
 
-          priv.DIV_PP_P(p); // Частное от деления левого на правое        
-          priv.MUL_PP_P(p); // Правое умножаем на частное         
-          this->SUB_PP_P(priv); // вычитаем        
+          priv.DIV_PP_P(p); // Частное от деления левого на правое   
+          //std::cout << "DIV " << priv << std::endl;
+          priv.MUL_PP_P(p); // Правое умножаем на частное   
+          //std::cout << "MUL " << priv << std::endl;
+          this->SUB_PP_P(priv); // вычитаем    
+         // std::cout << *this << std::endl;
     }
   
     return *this;
@@ -311,15 +314,29 @@ Polynomial Polynomial::GCF_PP_P(const Polynomial& p) {
         return Polynomial{ p };
     }
     else { // Обычный алгоритм НОД
-        Polynomial copy_p(p);
+        Polynomial copy_p(p);   
         while (copy_p != Polynomial{ 0 }) {
-            MOD_PP_P(copy_p);
-            Polynomial tmp(copy_p);            
-            copy_p = *this;
-            *this = tmp;          
+            if (deg >= copy_p.getRawDeg()) {
+                Polynomial priv(*this);
+                this->DIV_PP_P(copy_p);                           
+                std::deque <Integral> tmp_d;
+                for (int i = 0; i < deg; i++) {
+                    tmp_d.emplace_back(odds[i].TRANS_Q_Z());
+                    odds[i] = odds[i].TRANS_Z_Q(tmp_d[i]);
+                }
+                this->MUL_PP_P(copy_p);
+                priv.SUB_PP_P(*this);              
+                *this = priv;
+                Polynomial tmp(copy_p);
+                copy_p = *this;
+                *this = tmp;
+            }
+            else {
+                return Polynomial{ 1 };
+            }
         }
-        return Polynomial{ odds,deg };
     }
+    return Polynomial{ odds,deg };
 }
 
 /*  [P - 12]
