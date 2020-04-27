@@ -1,13 +1,13 @@
-#include "smart_integral.h"
+#include "Integral.h"
 
 /*
-    Р РµР°Р»РёР·Р°С†РёСЏ РјРµС‚РѕРґРѕРІ РєР»Р°СЃСЃР° Natural.
-    Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РјРµС‚РѕРґС‹: ...
+    Реализация методов класса Natural.
+    Дополнительные методы: ...
 */
 
 /* [Z - 1]
-    РЁРёСЂРЅРёРЅ РљРёСЂРёР»Р»
-    Р’Р·СЏС‚РёРµ РЅР°С‚СѓСЂР°Р»Р°Р»СЊРЅРѕРіРѕ РїРѕ РјРѕРґСѓР»СЋ РѕС‚ С†РµР»РѕРіРѕ С‡РёСЃР»Р°
+    Ширнин Кирилл
+    Взятие натуралального по модулю от целого числа
 */
 
 Natural Integral::ABS_Z_N() const {
@@ -15,21 +15,21 @@ Natural Integral::ABS_Z_N() const {
 }
 
 /*  [Z - 2]
-    Р‘Р°СЏР·РёС‚РѕРІ РћР»РµРі
-    РћРїСЂРµРґРµР»РµРЅРёРµ РїРѕР»РѕР¶РёС‚РµР»СЊРЅРѕСЃС‚Рё С‡РёСЃР»Р° (2 - РїРѕР»РѕР¶РёС‚РµР»СЊРЅРѕРµ, 0 вЂ” СЂР°РІРЅРѕРµ РЅСѓР»СЋ, 1 - РѕС‚СЂРёС†Р°С‚РµР»СЊРЅРѕРµ)
+    Баязитов Олег
+    Определение положительности числа (2 - положительное, 0 — равное нулю, 1 - отрицательное)
 */
 
 int Integral::POZ_Z_D() const {
     int flag = ABS_Z_N().NZER_N_B();
-    if(minus && flag)  // minus && !0
+    if (minus && flag)  // minus && !0
         return 1; // < 0
 
     return 2 * flag;  // >0 || 0
 }
 
 /*  [Z - 3]
-    Р‘Р°СЏР·РёС‚РѕРІ РћР»РµРі
-    РР·РјРµРЅСЏРµРј РїР°СЂР°РјРµС‚СЂ, РѕС‚РІРµС‡Р°СЋС‰РёР№ Р·Р° РїРѕР»РѕР¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ С‡РёСЃР»Р°
+    Баязитов Олег
+    Изменяем параметр, отвечающий за положительность числа
 */
 
 Integral& Integral::MUL_ZM_Z() {
@@ -40,8 +40,8 @@ Integral& Integral::MUL_ZM_Z() {
 }
 
 /*  [Z - 4]
-    Р‘Р°Р±РєРёРЅ РРІР°РЅ
-    РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РёР· РЅР°С‚СѓСЂР°Р»СЊРЅРѕРіРѕ РІ РЅРѕРІРѕРµ С†РµР»РѕРµ
+    Бабкин Иван
+    Преобразование из натурального в новое целое
 */
 
 Integral Integral::TRANS_N_Z(const Natural& n) const {
@@ -49,8 +49,8 @@ Integral Integral::TRANS_N_Z(const Natural& n) const {
 }
 
 /*  [Z - 5]
-    Р‘Р°Р±РєРёРЅ РРІР°РЅ
-    РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РёР· С†РµР»РѕРіРѕ РІ РЅР°С‚СѓСЂР°Р»СЊРЅРѕРµ
+    Бабкин Иван
+    Преобразование из целого в натуральное
 */
 
 Natural Integral::TRANS_Z_N() const {
@@ -58,39 +58,41 @@ Natural Integral::TRANS_Z_N() const {
 }
 
 /*  [Z - 6]
-    РљРІРёС‚РєРѕ Р”РјРёС‚СЂРёР№
-    РЎР»РѕР¶РµРЅРёРµ РґРІСѓС… С†РµР»С‹С… С‡РёСЃРµР»
+    Квитко Дмитрий
+    Сложение двух целых чисел
 */
 
 Integral& Integral::ADD_ZZ_Z(const Integral& b) {
     int switcher = b.POZ_Z_D();
-    Natural temp_n(odds, deg);  // РљРѕРїРёСЏ РЅР°С€РµРіРѕ РѕР±СЉРµРєС‚Р°
+    Natural temp_n(odds, deg);  // Копия нашего объекта
     int greater = temp_n.COMM_NN_D(b.ABS_Z_N());
 
-    if ((switcher == 2 && !minus) || (switcher == 1 && minus)) {  // С‡РёСЃР»Р° РѕРґРЅРѕРіРѕ Р·РЅР°РєР°
+    if ((switcher == 2 && !minus) || (switcher == 1 && minus)) {  // числа одного знака
         temp_n.ADD_NN_N(b.ABS_Z_N());
-        *this = Integral(temp_n);   // РїСЂРёСЃРІРѕРёРј РѕР±СЉРµРєС‚Сѓ Р·РЅР°С‡РµРЅРёРµ СЃСѓРјРјС‹ РїРѕ РјРѕРґСѓР»СЋ
+        *this = Integral(temp_n);   // присвоим объекту значение суммы по модулю
         if (switcher == 1)
             minus = true;
     }
-    else {  // Р·РЅР°РєРё РѕС‚Р»РёС‡Р°СЋС‚СЃСЏ
-        // РЅР°Р№РґС‘Рј Р±РѕР»СЊС€РµРµ РїРѕ РјРѕРґСѓР»СЋ Р·РЅР°С‡РµРЅРёРµ,
-        // СЃРѕС…СЂР°РЅРёРј РєРѕРїРёСЋ РёСЃС…РѕРґРЅРѕРіРѕ РјРёРЅСѓСЃР°
+    else {  // знаки отличаются
+        // найдём большее по модулю значение,
+        // сохраним копию исходного минуса
         bool final_minus = minus;
 
-        if (greater == 2)   {                   // this > b
+        if (greater == 2) {                   // this > b
             temp_n.SUB_NN_N(b.ABS_Z_N());
             *this = Integral(temp_n);
-        } else if (greater == 1) {              // b > this
+        }
+        else if (greater == 1) {              // b > this
             final_minus = b.getMinus();
             Natural b_copy(b.ABS_Z_N());
             b_copy.SUB_NN_N(temp_n);
             *this = Integral(b_copy);
-        } else {                                // b == this | РѕР±СЂР°Р±РѕС‚Р°РЅРѕ РІС‹С€Рµ, Р·РЅР°РєРё СЂР°Р·РЅС‹Рµ => 0
+        }
+        else {                                // b == this | обработано выше, знаки разные => 0
             final_minus = false;
             *this = Integral{};
         }
-        // СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РёР№ Р·РЅР°Рє
+        // устанавливаем результирующий знак
         minus = final_minus;
     }
 
@@ -98,8 +100,8 @@ Integral& Integral::ADD_ZZ_Z(const Integral& b) {
 }
 
 /*  [Z - 7]
-    РўР°СЂР°Р±СѓСЂРёРЅ РђР»РµРєСЃР°РЅРґСЂ
-    Р’С‹РїРѕР»РЅРёРј РІС‹С‡РёС‚Р°РЅРёРµ РґРІСѓС… С†РµР»С‹С… С‡РёСЃРµР», СЃСЂР°РІРЅРёРІР°СЏ РёС… Рё Р°РЅР°Р»РёР·РёСЂСѓСЏ РёС… РїРѕР»РѕР¶РёС‚РµР»СЊРЅРѕСЃС‚СЊ/РѕС‚СЂРёС†Р°С‚РµР»СЊРЅРѕСЃС‚СЊ.
+    Тарабурин Александр
+    Выполним вычитание двух целых чисел, сравнивая их и анализируя их положительность/отрицательность.
 */
 
 Integral& Integral::SUB_ZZ_Z(const Integral& i) {
@@ -109,34 +111,34 @@ Integral& Integral::SUB_ZZ_Z(const Integral& i) {
 }
 
 /*  [Z - 8]
-    РњРёС…Р°РёР» РђСЂС…РёРїРѕРІ
-    РџРµСЂРµРјРЅРѕР¶РµРЅРёРµ С†РµР»С‹С… С‡РёСЃРµР»
-    РЎСЃС‹Р»РєРё РЅР° РґРѕРєСѓРјРµРЅС‚Р°С†РёСЋ, РёСЃРїРѕР»СЊР·РѕРІР°РЅРЅСѓСЋ РїСЂРё СЂР°Р·СЂР°Р±РѕС‚РєРµ.
+    Михаил Архипов
+    Перемножение целых чисел
+    Ссылки на документацию, использованную при разработке.
 */
 
 Integral& Integral::MUL_ZZ_Z(const Integral& rhs) {
-    int flag = rhs.POZ_Z_D(); //РЈР·РЅР°РµРј РєР°РєРѕР№ Р·РЅР°Рє Сѓ С‡РёСЃР»Р°
+    int flag = rhs.POZ_Z_D(); //Узнаем какой знак у числа
     if (deg == 0u) {
         MakeNull();
         return *this;
     }
 
-    Natural lhs(ABS_Z_N()); // РџСЂРµРѕР±СЂР°Р·РѕРІР°Р»Рё *this РІ РЅР°С‚СѓСЂР°Р» Рё СЃРѕС…СЂР°РЅРёР»Рё РІ lhs(left hand side),
-                            // РёР±Рѕ РјРµС‚РѕРґС‹ РјРѕРґСѓР»СЏ Рё trans_z_n СЂР°Р±РѕС‚Р°СЋС‚ РЅРµ РЅР°РїСЂСЏРјСѓСЋ СЃ *this.
-    lhs.MUL_NN_N(rhs.TRANS_Z_N()); // РџРµСЂРµРјРЅРѕР¶РёР»Рё РґРІР° РЅР°С‚СѓСЂР°Р»Р°
+    Natural lhs(ABS_Z_N()); // Преобразовали *this в натурал и сохранили в lhs(left hand side),
+                            // ибо методы модуля и trans_z_n работают не напрямую с *this.
+    lhs.MUL_NN_N(rhs.TRANS_Z_N()); // Перемножили два натурала
     bool final_minus = false;
 
-    if ((flag == 1 && !minus) || (flag == 2 && minus))   // РїСЂРѕРІРµСЂСЏРµРј РЅР° СЂР°Р·РЅРѕСЃС‚СЊ Р·РЅР°РєРѕРІ
+    if ((flag == 1 && !minus) || (flag == 2 && minus))   // проверяем на разность знаков
         final_minus = true;
 
     *this = lhs;
-    minus = final_minus;    // СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РёР№ Р·РЅР°Рє
+    minus = final_minus;    // устанавливаем результирующий знак
     return *this;
 }
 
 /*  [Z - 9]
-    РњРёС…Р°РёР» РђСЂС…РёРїРѕРІ
-    Р”РµР»РµРЅРёРµ С†РµР»С‹С… С‡РёСЃРµР» РЅР°С†РµР»Рѕ
+    Михаил Архипов
+    Деление целых чисел нацело
 */
 
 Integral& Integral::DIV_ZZ_Z(const Integral& rhs) {
@@ -148,35 +150,32 @@ Integral& Integral::DIV_ZZ_Z(const Integral& rhs) {
 
     bool final_minus = minus;
 
-    if (flag_for_rhs == 1)      // РІС‚РѕСЂРѕР№ РјРЅРѕР¶РёС‚РµР»СЊ < 0
-        final_minus = !final_minus; // РѕРїСЂРµРґРµР»РёРј Р·РЅР°Рє СЂРµР·СѓР»СЊС‚Р°С‚Р°
+    if (flag_for_rhs == 1)      // второй множитель < 0
+        final_minus = !final_minus; // определим знак результата
 
-    const Natural natural_one("1");     // РїСЂРѕРІРµСЂРєР° РЅР° РµРґРёРЅРёС†Сѓ
-    if (ABS_Z_N() == natural_one) {  // РїСЂРѕРІРµСЂРёС‚ РёРјРµРЅРЅРѕ РјРѕРґСѓР»СЊ Р·РЅР°РјРµРЅР°С‚РµР»СЏ
-        *this = Integral(natural_one);
-        minus = final_minus;
-        return *this;
-    }
-
+    const Natural natural_one("1");    
 
     Natural rhs_n = rhs.ABS_Z_N();
     int switcher = ABS_Z_N().COMM_NN_D(rhs_n);
     if (switcher == 0) {
         *this = Integral(natural_one);
-    } else if (switcher == 1) {
+    }
+    else if (switcher == 1) {
         final_minus = false;
         MakeNull();
-    } else if (switcher == 2) {
+    }
+    else if (switcher == 2) {
         *this = ABS_Z_N().DIV_NN_N(rhs.ABS_Z_N());
     }
 
     minus = final_minus;
+    //std::cout << "integral:" << *this << std::endl;
     return *this;
 }
 
 /*  [Z - 10]
-    РЁРёСЂРЅРёРЅ РљРёСЂРёР»Р»
-    Р’Р·СЏС‚РёРµ РѕСЃС‚Р°С‚РєР° РѕС‚ РґРµР»РµРЅРёСЏ С†РµР»С‹С… С‡РёСЃРµР»
+    Ширнин Кирилл
+    Взятие остатка от деления целых чисел
 */
 
 Integral& Integral::MOD_ZZ_Z(const Integral& i) {
@@ -187,7 +186,7 @@ Integral& Integral::MOD_ZZ_Z(const Integral& i) {
 
     bool final_minus = minus;
 
-    if (i.POZ_Z_D() == 1)   // i < 0 -> РјРµРЅСЏРµРј Р·РЅР°Рє
+    if (i.POZ_Z_D() == 1)   // i < 0 -> меняем знак
         final_minus = !final_minus;
 
     Natural modular_other(i.ABS_Z_N());
@@ -200,7 +199,7 @@ Integral& Integral::MOD_ZZ_Z(const Integral& i) {
 
 
 
-// <! ---------- Friend С„СѓРЅРєС†РёРѕРЅР°Р» ---------- !> //
+// <! ---------- Friend функционал ---------- !> //
 
 
 Natural ABS_Z_N(const Integral& i) {
@@ -208,7 +207,7 @@ Natural ABS_Z_N(const Integral& i) {
 }
 
 Integral TRANS_N_Z(const Natural& n) {
-    return Integral{n};
+    return Integral{ n };
 }
 
 Natural TRANS_Z_N(const Integral& i) {
