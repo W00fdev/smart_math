@@ -1,5 +1,4 @@
 #include "smart_rational.h"
-
 /*
     Реализация методов класса Rational.
     Дополнительные методы: ...
@@ -80,14 +79,13 @@ Rational Rational::TRANS_Z_Q(const Integral& i) const {
     Преобразование Рационального в целое с округлением деления
 */
 
-Integral Rational::TRANS_Q_Z(const Rational& n) const {
-    Rational a(n.numerator, n.denominator);
-    a.RED_Q_Q();
-    if (a.INT_Q_B())
-        return Integral(a.numerator.getRawOdds(), a.numerator.getRawDeg(), a.numerator.getMinus());
+Integral Rational::TRANS_Q_Z()  {
+    this->RED_Q_Q();
+    if (this->INT_Q_B())
+        return Integral(numerator);
 
-    Integral i_numerator = a.getNumerator();
-    Integral i_denominator = i_numerator.TRANS_N_Z(a.getDenominator());
+    Integral i_numerator(numerator);
+    Integral i_denominator(denominator);
     return i_numerator.DIV_ZZ_Z(i_denominator);
 }
 
@@ -131,8 +129,11 @@ Rational& Rational::SUB_QQ_Q(const Rational& r) {
 Rational& Rational::MUL_QQ_Q(const Rational& r) {
     // проверка на ноль
     numerator.MUL_ZZ_Z(r.getNumerator());
+   // std::cout << "numerator: " << numerator << std::endl;
     denominator.MUL_NN_N(r.getDenominator());
+   // std::cout << "denominator: " << denominator << std::endl;
     RED_Q_Q();
+   // std::cout << "RED_Q_Q:" << *this << std::endl;
     return *this;
 }
 
@@ -171,8 +172,8 @@ Rational TRANS_Z_Q(const Integral& i) {
     return r.TRANS_Z_Q(i);
 }
 
-Integral TRANS_Q_Z(const Rational& n) {
-    return n.TRANS_Q_Z(n);
+Integral TRANS_Q_Z( Rational& n) {
+    return n.TRANS_Q_Z();
 }
 
 Rational ADD_QQ_Q(const Rational& r1, const Rational& r2) {

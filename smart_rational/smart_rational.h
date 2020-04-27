@@ -7,7 +7,7 @@
 
 #include <algorithm>
 
-#include "../smart_integral/smart_integral.h"
+#include "Integral.h"
 
 class Rational{
 private:
@@ -103,7 +103,7 @@ public:
     Rational& RED_Q_Q();
     [[nodiscard]] bool INT_Q_B() const;
     [[nodiscard]] Rational TRANS_Z_Q(const Integral&) const;
-    [[nodiscard]] Integral TRANS_Q_Z(const Rational&) const;
+    [[nodiscard]] Integral TRANS_Q_Z() ;
     Rational& ADD_QQ_Q(const Rational&);
     Rational& SUB_QQ_Q(const Rational&);
     Rational& MUL_QQ_Q(const Rational&);
@@ -126,7 +126,7 @@ public:
     [[nodiscard]] Natural getDenominator() const { return denominator; }
     [[nodiscard]] Integral getNumerator() const { return numerator; }
 
-    Rational& operator=(const std::string& string_num);
+    //Rational& operator=(const std::string& string_num);
 
     Rational& operator=(const Rational & num) {
         numerator = num.getNumerator();
