@@ -113,7 +113,7 @@ std::ostream& operator<<(std::ostream& os, const Polynomial& p) {
                 os << odd;      // Rational
                 if (deg > 0) {
                     os << "x";
-                    if (deg > 2)
+                    if (deg >= 2)
                         os << "^" + std::to_string(deg);
                 }
             }
