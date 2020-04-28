@@ -72,7 +72,7 @@ private:
         odds[0] = 0u;   // 0 - это тоже символ, поэтому deg = 1
         deg = 1u;
     }
-
+    
 public:
     Natural() {
         deg = 1u;
@@ -119,7 +119,7 @@ public:
 
     // <! ---------- Friend функционал ---------- !> //
 
-    friend int COMM_NN_D(const Natural &, const Natural &);
+    friend int COMM_NN_D(const Natural& n1, const Natural& n2);
     friend Natural ADD_NN_N(const Natural &, const Natural &);
     friend Natural SUB_NN_N(const Natural &, const Natural &);
     friend Natural MUL_NN_N(const Natural &, const Natural &);
@@ -146,6 +146,18 @@ public:
     Natural &operator=(const int64_t &num) {
         parser_foundation(std::to_string(num));
         return *this;
+    }
+
+    Natural& operator++() {
+        return this->ADD_1N_N();
+    }
+
+    Natural& operator+(const Natural& n) {
+        return this->ADD_NN_N(n);
+    }
+
+    Natural& operator-(const Natural& n) {
+        return this->SUB_NN_N(n);
     }
 
     Natural& operator*(const int &d) {         // Для работы со скаляром

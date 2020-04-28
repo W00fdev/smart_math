@@ -28,14 +28,13 @@ Polynomial& Polynomial::MUL_ZM_P() {
 
 bool Polynomial::NZER_P_B() {
     unsigned word = 0u;
-    Rational nuller{ "0" };
+    Rational nuller{"0"};
     if (deg == 1u && odds[0] == nuller) return false;
 
     for (unsigned runner = 0; runner < deg; runner++) {
         if (odds.at(runner) == nuller) {
             word++;
-        }
-        else if (odds.at(runner) != nuller) {
+        } else if (odds.at(runner) != nuller) {
             break;
         }
     }
@@ -44,8 +43,7 @@ bool Polynomial::NZER_P_B() {
         if (word == deg) {
             MakeNull();
             return false;
-        }
-        else {
+        } else {
             odds.erase(odds.begin(), odds.begin() + word); // очистим лишнее
             deg = odds.size();
         }
@@ -62,19 +60,18 @@ bool Polynomial::NZER_P_B() {
 */
 
 Polynomial& Polynomial::ADD_PP_P(const Polynomial& p) {
-    if (p.getRawDeg() == 0) return *this;
-    uint64_t offset = 0u;
+    // если прибавляем ноль
+    if (p == Polynomial("0")) return *this;
+
+    uint64_t offset;
     std::deque<Rational> operating_odds;
     if (deg > p.getRawDeg()) {
         offset = deg - p.getRawDeg();
         operating_odds = p.getRawOdds();
-
-    }
-    else {
+    } else {
         offset = p.getRawDeg() - deg;
         operating_odds = odds;
-        odds = p.getRawOdds();
-        deg = p.getRawDeg();
+        *this = p;
     }
 
     for (int64_t i = operating_odds.size() - 1; i >= 0; i--) {
@@ -93,11 +90,7 @@ Polynomial& Polynomial::ADD_PP_P(const Polynomial& p) {
 */
 
 Polynomial& Polynomial::SUB_PP_P(const Polynomial& p) {
-    Polynomial copy_p = p;
-    copy_p.MUL_ZM_P();
-    ADD_PP_P(copy_p);   // Проверка происходит внутри
-
-    return *this;
+    return ADD_PP_P(Polynomial(p).MUL_ZM_P());   // Проверка происходит внутри
 }
 
 /*  [P - 3]
@@ -107,16 +100,15 @@ Polynomial& Polynomial::SUB_PP_P(const Polynomial& p) {
 */
 
 Polynomial& Polynomial::MUL_PQ_P(const Rational& q) {
-    Rational copy_q = q;
-    copy_q.RED_Q_Q();
-    if (copy_q == Rational{ "0" }) {
+    Rational copy_q = Rational(q).RED_Q_Q();
+
+    if (copy_q == Rational{"0"}) {
         MakeNull();
         return *this;
     }
 
-    for (auto& odd : odds) {
+    for (auto& odd : odds)
         odd.MUL_QQ_Q(copy_q);
-    }
 
     return *this;
 }
@@ -149,7 +141,7 @@ Rational Polynomial::LED_P_Q() const {
 */
 
 Natural Polynomial::DEG_P_N() const {
-    return Natural{ deg };
+    return Natural(deg);
 }
 
 /*  [P - 7]
@@ -157,9 +149,9 @@ Natural Polynomial::DEG_P_N() const {
     Вынесение дроби НОД/НОК из многочлена.
 */
 
-Rational Polynomial::FAC_P_Q() {
+Rational Polynomial::FAC_P_Q() const {
     Natural den(odds[0].getDenominator()); // Знаменатель самого левого эд-та
-    Natural num(odds[0].getNumerator().getRawOdds(), odds[0].getNumerator().getRawDeg()); // Числитель самого левого эл-та
+    Natural num(odds[0].getNumerator().TRANS_Z_N()); // Числитель самого левого эл-та
     for (uint64_t i = 1; i < deg; i++) {
         den.LCM_NN_N(odds[i].getDenominator());
         num.GCF_NN_N(odds[i].getNumerator().ABS_Z_N());
@@ -183,34 +175,33 @@ Polynomial& Polynomial::MUL_PP_P(const Polynomial& p) {
     }
 
     Polynomial result;
-    // для скорости, если степени сильно отличаются
-    // Да, дублирование кода. Пусть останется так.
     if (deg <= p.getRawDeg()) {
         // (x - 1) * (x^3 - x + 1)
         // если степень левого < степени правого
-       
+
         for (uint64_t i = 0; i < deg; i++) {
             // теперь умножим это на каждый член "p"
             Polynomial copy_other = p;
             // домножаем на коэффициент и степень
             copy_other.MUL_PQ_P(odds[i]);
             copy_other.MUL_Pxk_P(deg - 1 -i);
-            result.ADD_PP_P(copy_other);          
+            result.ADD_PP_P(copy_other);
         }
-       
+
     }
     else {
-       // std::cout << "Copy_this: ";
+        auto copy_p_odds = p.getRawOdds();
+        auto copy_p_degs = p.getRawDeg();
         for (uint64_t i = 0; i < p.getRawDeg(); i++) {
             // теперь умножим это на каждый член "p"
             Polynomial copy_this = *this;
             // домножаем на коэффициент и степень
-            copy_this.MUL_PQ_P(p.getRawOdds()[i]);
-            copy_this.MUL_Pxk_P(p.getRawDeg() - 1 - i);
+            copy_this.MUL_PQ_P(copy_p_odds[i]);
+            copy_this.MUL_Pxk_P(copy_p_degs - 1 - i);
             result.ADD_PP_P(copy_this);
         }
-       
     }
+
     *this = result;
     return *this;
 }
@@ -224,16 +215,15 @@ Polynomial& Polynomial::MUL_PP_P(const Polynomial& p) {
 Polynomial& Polynomial::DIV_PP_P(const Polynomial& p) {
     // использовать [Q - 8][P - 1][P - 2][P - 4][P - 6]
 
-    if (deg == 0) return *this;
-    else if (p.DEG_P_N() == Natural{ 0 }) return *this;
-  
+    if (*this == Polynomial("0")) return *this;
+    else if (p == Polynomial("1")) return *this;
+
     //Integral result;
     if (deg < p.getRawDeg()) {
         // если степень левого < степени правого
         // то деление = 0
         MakeNull();
-    }
-    else {
+    } else {
         uint64_t offset = deg - p.getRawDeg();
         uint64_t stable_deg = deg;
         Polynomial res;
@@ -250,7 +240,7 @@ Polynomial& Polynomial::DIV_PP_P(const Polynomial& p) {
 
             std::deque<Rational> res_deq;
             res_deq.push_back(divided);
-            res.ADD_PP_P(Polynomial(res_deq, res_deq.size()).MUL_Pxk_P(offset));
+            res.ADD_PP_P(Polynomial(res_deq, res_deq.size()).MUL_Pxk_P(offset) );
 
             if (offset == 0) {
                 break;
@@ -270,34 +260,24 @@ Polynomial& Polynomial::DIV_PP_P(const Polynomial& p) {
     return *this;
 }
 
-/*
-    Архипов Михаил
-    Остаток от деления
+/*  [P - 10]
+    Автор модуля.
+    Краткое описание модуля...
+    Ссылки на документацию, использованную при разработке.
 */
-// [P - 10]
+
 Polynomial& Polynomial::MOD_PP_P(const Polynomial& p) {
-    if (deg == 0) return *this;
-    else if (p.DEG_P_N() == Natural{ 0 }) return *this;
+    if (*this == Polynomial("0")) return *this;
+    else if (p == Polynomial("1")) return *this;
 
     //Integral result;
-    if (deg < p.getRawDeg()) {
-        // если степень левого < степени правого
-        // то остаток = левый полином
-        return *this;
+    if (deg >= p.getRawDeg()) {
+        Polynomial priv(*this);
+        priv.DIV_PP_P(p); // Частное от деления левого на правое
+        priv.MUL_PP_P(p); // Правое умножаем на частное
+        this->SUB_PP_P(priv); // вычитаем
     }
-    else {      
-        Polynomial priv(*this);// priv - private(частное)
-        // *this(n) = p(n)*priv(n) +r(n)
-        // r(n) = *this(n) - p(n)*priv(n)
 
-          priv.DIV_PP_P(p); // Частное от деления левого на правое   
-          //std::cout << "DIV " << priv << std::endl;
-          priv.MUL_PP_P(p); // Правое умножаем на частное   
-          //std::cout << "MUL " << priv << std::endl;
-          this->SUB_PP_P(priv); // вычитаем    
-         // std::cout << *this << std::endl;
-    }
-  
     return *this;
 }
 
@@ -307,36 +287,42 @@ Polynomial& Polynomial::MOD_PP_P(const Polynomial& p) {
 */
 
 Polynomial Polynomial::GCF_PP_P(const Polynomial& p) {
-    if (p.getRawDeg() == 0u) { //  Если Р = 0, то возвращаем *this
-        return Polynomial{ *this };
+    // Проверки
+
+    if (p == Polynomial("1")) { //  Если Р = 0, то возвращаем *this
+        return Polynomial{"1"};
     }
-    else if (deg == 0u) { //Если первый полином равен нулю,то возвращаем P
+    else if (*this == Polynomial("0")) { //Если первый полином равен нулю,то возвращаем P
+        if (p == Polynomial("0"))
+            return Polynomial("0");
+
         return Polynomial{ p };
+    } else if (p == Polynomial("0")) {
+        return *this;
     }
     else { // Обычный алгоритм НОД
-        Polynomial copy_p(p);   
+        Polynomial copy_p(p);
         while (copy_p != Polynomial{ 0 }) {
             if (deg >= copy_p.getRawDeg()) {
                 Polynomial priv(*this);
-                this->DIV_PP_P(copy_p);                           
-                std::deque <Integral> tmp_d;
-                for (int i = 0; i < deg; i++) {
-                    tmp_d.emplace_back(odds[i].TRANS_Q_Z());
-                    odds[i] = odds[i].TRANS_Z_Q(tmp_d[i]);
+                this->DIV_PP_P(copy_p);
+                for (auto& odd : odds) {
+                    odd = odd.TRANS_Z_Q(odd.TRANS_Q_Z());
                 }
                 this->MUL_PP_P(copy_p);
-                priv.SUB_PP_P(*this);              
-                *this = priv;
+                priv.SUB_PP_P(*this);
+
                 Polynomial tmp(copy_p);
-                copy_p = *this;
-                *this = tmp;
+                copy_p = priv;
+                *this = tmp;        // меняем местами a и b
             }
             else {
                 return Polynomial{ 1 };
             }
         }
     }
-    return Polynomial{ odds,deg };
+
+    return *this;
 }
 
 /*  [P - 12]
@@ -346,13 +332,13 @@ Polynomial Polynomial::GCF_PP_P(const Polynomial& p) {
 
 Polynomial& Polynomial::DER_PP_P() {
     std::deque<Rational> Derivative;
-    if (deg == 0 || deg == 1) {
+    if (deg == 1) {
         MakeNull();
         return *this;
     }
 
     for (int64_t i = 0; i < deg - 1; i++) {
-        Derivative.emplace_back(odds[i].MUL_QQ_Q(Rational{ Integral{(int64_t)deg - 1 - i},Natural{1} }));
+        Derivative.emplace_back(odds[i].MUL_QQ_Q(Rational{ Integral{(int64_t)deg-1-i},Natural{1} }));
     }
 
     odds = Derivative;
@@ -362,7 +348,6 @@ Polynomial& Polynomial::DER_PP_P() {
 
 /*  [P - 13]
     Архипов Михаил
-    Ни ебу че тут происходит и работает ли правильно
 */
 
 Polynomial& Polynomial::NMR_P_P() {
@@ -370,7 +355,7 @@ Polynomial& Polynomial::NMR_P_P() {
     tmp_this.DER_PP_P();
     tmp_this.GCF_PP_P(*this);
     this->DIV_PP_P(tmp_this);
-    this->FAC_P_Q();
+    FAC_P_Q();
     return *this;
 }
 
@@ -390,7 +375,7 @@ Polynomial SUB_PP_P(const Polynomial& p1, const Polynomial& p2) {
     return const_disqualification.SUB_PP_P(p2);
 }
 
-Polynomial MUL_PQ_P(const Polynomial& p1, const Rational& r1) {
+Polynomial MUL_PQ_P(const Polynomial& p1, const Rational& r1){
     Polynomial const_disqualification(p1);
     return const_disqualification.MUL_PQ_P(r1);
 }
@@ -398,4 +383,29 @@ Polynomial MUL_PQ_P(const Polynomial& p1, const Rational& r1) {
 Polynomial MUL_Pxk_P(const Polynomial& p1, const uint64_t& k) {
     Polynomial const_disqualification(p1);
     return const_disqualification.MUL_Pxk_P(k);
+}
+
+Polynomial MUL_PP_P(const Polynomial& p1, const Polynomial& p2) {
+    Polynomial const_disqualification(p1);
+    return const_disqualification.MUL_PP_P(p2);
+}
+
+Polynomial DIV_PP_P(const Polynomial& p1, const Polynomial& p2) {
+    Polynomial const_disqualification(p1);
+    return const_disqualification.DIV_PP_P(p2);
+}
+
+Polynomial MOD_PP_P(const Polynomial& p1, const Polynomial& p2) {
+    Polynomial const_disqualification(p1);
+    return const_disqualification.MOD_PP_P(p2);
+}
+
+Polynomial GCF_PP_P(const Polynomial& p1, const Polynomial& p2) {
+    Polynomial const_disqualification(p1);
+    return const_disqualification.GCF_PP_P(p2);
+}
+
+
+Rational FAC_P_Q(const Polynomial& p) {
+    return p.FAC_P_Q();
 }

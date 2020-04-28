@@ -3,8 +3,23 @@
 std::ostream& operator<<(std::ostream& os, const Natural& n) {
     const auto data = n.getRawOdds();
     if (n.getRawDeg() > 0 && !data.empty()) {
-        const unsigned offset = data.size() - n.getRawDeg();
-        for (unsigned i = offset; i < n.getRawDeg() + offset; i++) {
+        const uint64_t  offset = n.getRawDeg() % 3;
+        int counter = 0; bool after_first = false;
+        if (offset == 0u)  {
+            after_first = true;
+            counter = -1;
+        }
+        for (uint64_t i = 0u; i < n.getRawDeg(); i++) {
+            if (i != 0 && n.getRawDeg() > 3 && i == offset) {
+                os << "'";
+                after_first = true;
+            } else if (after_first) {
+                counter++;
+                if (counter == 3) {
+                    counter = 0;
+                    os << "'";
+                }
+            }
             os << (int)data.at(i);
         }
     }
@@ -25,8 +40,19 @@ std::ostream& operator<<(std::ostream& os, const Integral& i) {
 
     const auto data = i.getRawOdds();
     if (i.getRawDeg() > 0 && !data.empty()) {
-        const unsigned offset = data.size() - i.getRawDeg();
-        for (unsigned ii = offset; ii < i.getRawDeg() + offset; ii++) {
+        const uint64_t offset = i.getRawDeg() % 3;
+        bool after_first = false; int counter = 0;
+        for (uint64_t ii = 0u; ii < i.getRawDeg(); ii++) {
+            if (ii != 0 && i.getRawDeg() > 3 && ii == offset) {
+                os << "'";
+                after_first = true;
+            } else if (after_first) {
+                counter++;
+                if (counter == 3) {
+                    counter = 0;
+                    os << "'";
+                }
+            }
             os << (int)data.at(ii);
         }
     }
@@ -63,13 +89,21 @@ std::istream& operator>>(std::istream& is, const Rational&) {
 std::ostream& operator<<(std::ostream& os, const Polynomial& p) {
     if (p.getRawDeg() > 0) {
         int64_t deg = p.getRawDeg() - 1;
+        bool first = true;
         for (const auto& odd: p.getRawOdds()) {
-            os  << odd;      // Rational
-            if (deg != 0) {
-                os << "x^" + std::to_string(deg);
-                os << " + ";      // если не последний элемент
-            }
+            if (odd != Rational("0")) {
+                if (!first)
+                    os << " + ";
+                else
+                    first = false;
 
+                os << odd;      // Rational
+                if (deg > 0) {
+                    os << "x";
+                    if (deg > 2)
+                        os << "^" + std::to_string(deg);
+                }
+            }
             deg--;
         }
     }

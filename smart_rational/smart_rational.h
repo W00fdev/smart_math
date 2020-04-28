@@ -7,7 +7,7 @@
 
 #include <algorithm>
 
-#include "Integral.h"
+#include "../smart_integral/smart_integral.h"
 
 class Rational{
 private:
@@ -103,7 +103,7 @@ public:
     Rational& RED_Q_Q();
     [[nodiscard]] bool INT_Q_B() const;
     [[nodiscard]] Rational TRANS_Z_Q(const Integral&) const;
-    [[nodiscard]] Integral TRANS_Q_Z() ;
+    [[nodiscard]] Integral TRANS_Q_Z();
     Rational& ADD_QQ_Q(const Rational&);
     Rational& SUB_QQ_Q(const Rational&);
     Rational& MUL_QQ_Q(const Rational&);
@@ -126,7 +126,10 @@ public:
     [[nodiscard]] Natural getDenominator() const { return denominator; }
     [[nodiscard]] Integral getNumerator() const { return numerator; }
 
-    //Rational& operator=(const std::string& string_num);
+    Rational& operator=(const std::string& string_num) {
+        parser_foundation(string_num);
+        return *this;
+    }
 
     Rational& operator=(const Rational & num) {
         numerator = num.getNumerator();
@@ -134,7 +137,7 @@ public:
         return *this;
     }
 
-    int operator==(const Rational& other) const {
+    bool operator==(const Rational& other) const {
         Rational copy_other = other;
         copy_other.RED_Q_Q();
 
@@ -145,17 +148,33 @@ public:
                 &&  copy_this.getNumerator() == copy_other.getNumerator();
     }
 
-    int operator!=(const Rational& other) const {
+    bool operator!=(const Rational& other) const {
         return !(*this == other);
     }
 
-    Rational& operator*(const int&);         // Для работы со скаляром
-    Rational& operator*(const Natural&);   // Для работы со степенями
-    Rational& operator*(const Rational&);   // Для работы с рац. числами
+    // Для работы со скаляром
+    Rational& operator*(const int& d) {
+        numerator = Integral(numerator.TRANS_Z_N().MUL_ND_N(d), numerator.getMinus());
+        RED_Q_Q();
+        return *this;
+    }
 
-    Rational& operator/(const Rational& other) ;
+    Rational& operator*(const Rational& r) {
+        return MUL_QQ_Q(r);
+    }
 
-    Rational& operator%(const Rational& other);
+    Rational& operator+(const Rational& r) {
+        return ADD_QQ_Q(r);
+    }
+
+    Rational& operator-(const Rational& r) {
+        return SUB_QQ_Q(r);
+    }
+
+    Rational& operator/(const Rational& other) {
+        return DIV_QQ_Q(other);
+    }
+
 };
 
 #endif //PROJECT_SMART_RATIONAL_H

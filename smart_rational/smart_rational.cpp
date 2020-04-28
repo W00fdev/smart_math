@@ -1,4 +1,5 @@
 #include "smart_rational.h"
+
 /*
     Реализация методов класса Rational.
     Дополнительные методы: ...
@@ -79,10 +80,10 @@ Rational Rational::TRANS_Z_Q(const Integral& i) const {
     Преобразование Рационального в целое с округлением деления
 */
 
-Integral Rational::TRANS_Q_Z()  {
-    this->RED_Q_Q();
-    if (this->INT_Q_B())
-        return Integral(numerator);
+Integral Rational::TRANS_Q_Z() {
+    RED_Q_Q();
+    if (INT_Q_B())
+        return numerator;
 
     Integral i_numerator(numerator);
     Integral i_denominator(denominator);
@@ -115,10 +116,9 @@ Rational& Rational::ADD_QQ_Q(const Rational& r) {
     Вычитание дробей реализуем как сложение двух дробей, где у второй изменён знак
 */
 
+// Изменили знак у второй дроби
 Rational& Rational::SUB_QQ_Q(const Rational& r) {
-    Rational r_copy_inversed = Rational(r.getNumerator().MUL_ZM_Z(), r.getDenominator());
-    ADD_QQ_Q(r_copy_inversed);
-    return *this;
+    return ADD_QQ_Q(Rational(r.getNumerator().MUL_ZM_Z(), r.getDenominator()));
 }
 
 /*  [Q - 7]
@@ -129,25 +129,18 @@ Rational& Rational::SUB_QQ_Q(const Rational& r) {
 Rational& Rational::MUL_QQ_Q(const Rational& r) {
     // проверка на ноль
     numerator.MUL_ZZ_Z(r.getNumerator());
-   // std::cout << "numerator: " << numerator << std::endl;
     denominator.MUL_NN_N(r.getDenominator());
-   // std::cout << "denominator: " << denominator << std::endl;
     RED_Q_Q();
-   // std::cout << "RED_Q_Q:" << *this << std::endl;
     return *this;
 }
 
 /*  [Q - 8]
     Ширнир Кирилл
     Деление дробей. Умножим, перевернув правую дробь.
-    Для этого создана специальная функция Invert().
+    Для этого создана специальная функция Invert_Q().
 */
 Rational& Rational::DIV_QQ_Q(const Rational& r) {
-    Rational inverted_r = r;
-    inverted_r.INVERT_Q();
-    MUL_QQ_Q(inverted_r);
-
-    return *this;
+    return MUL_QQ_Q(Rational(r).INVERT_Q());
 }
 
 
@@ -172,8 +165,9 @@ Rational TRANS_Z_Q(const Integral& i) {
     return r.TRANS_Z_Q(i);
 }
 
-Integral TRANS_Q_Z( Rational& n) {
-    return n.TRANS_Q_Z();
+Integral TRANS_Q_Z(const Rational& n) {
+    Rational const_disqualification(n);
+    return const_disqualification.TRANS_Q_Z();
 }
 
 Rational ADD_QQ_Q(const Rational& r1, const Rational& r2) {

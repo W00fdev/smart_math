@@ -20,37 +20,25 @@ using std::endl;
 // 3: 3
 
 // Точка входа в программу
-int main(int argc, char *argv[]) {
+int main() {
 
     // Ускоряем ввод-вывод. За справкой в "smart_functional.cpp"
     ActivateFastStreams();
 
-    if (argc > 1) {
-        // Обработка параметров
-
-        for (int command = 1; command < argc; command++) {
-            if (argv[command] == "break") {
-                exit(1);
-            } else {    // if (argv[command] == "..."
-
-            }
-
-        }
-        // Обработка закончена
-    }
 
     // Ввод производится через string в параметрах конструктора
 
     // Функции-методы объектов изменяют объект, т.е [n1.ADD_NN_N(n2);] == [n1 = ADD_NN_N(n1, n2);]
     // Когда глобальные функции не изменяют объектов.
 
-    cout << "TEST FUNCTIONAL:\n\nNaturals:\n\n";
 
-    Natural n1 {"100"};
-    Natural n2 {"55"};
+    Natural n1 {"600"};
+    Natural n2 {"550"};
+
+    n1 = n1 * n2;
     cout << n1 << " + " << n2 << " = " << n1.ADD_NN_N(n2) << endl;
     cout << n1 << " - " << n2 << " = " << n1.SUB_NN_N(n2) << endl;
-    cout << n1 << " * " << n2 << " = " << n1.MUL_NN_N(n2) << endl;
+    cout << n1 << " * " << n2 << " = " << n1*n2 << endl;
     cout << n1 << " / " << n2 << " = " << n1.DIV_NN_N(n2) << endl;
     cout << n1 << " % " << n2 << " = " << n1.MOD_NN_N(n2) << endl;
     cout << n1 << " gcd " << n2 << " = " << n1.GCF_NN_N(n2) << endl;
@@ -79,12 +67,17 @@ int main(int argc, char *argv[]) {
     cout << "\n\nPolynomial:\n\n";
 
 
-    Polynomial p1 {"100 -10 0 -1"};
-    Polynomial p2 {"2 -3"};
+
+
+    Polynomial p1 {"-10x^4 20x^10 5/10x^8 -1"};
+    Polynomial p2 {"2x^3 -3x -3"};
+
     cout << "[" << p1 << "]" << " + " << "[" << p2 << "] = " << p1.ADD_PP_P(p2) << endl;
     cout << "[" << p1 << "]"  << " - " << "[" << p2 << "] = " << p1.SUB_PP_P(p2) << endl;
     cout << "[" << p1 << "]"  << " * " << "[" << p2 << "] = " << p1.MUL_PP_P(p2) << endl;
     cout << "[" << p1 << "]"  << " / " << "[" << p2 << "] = " << p1.DIV_PP_P(p2) << endl;
+    cout << "[" << p1 << "]"  << "' = " << p1.DER_PP_P() << endl;
+
 
 
 

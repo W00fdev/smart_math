@@ -30,7 +30,7 @@ class Integral{
 private:
     std::deque<uint8_t> odds;
     uint64_t deg = 0u;
-    bool minus{};
+    bool minus;
 
     // Одних конструкторов по значению прямого int'a / string'a недостаточно
     // Для удобства реализуем операторы присваивания через инкапсуляцию общей функции
@@ -89,6 +89,12 @@ public:
         minus = false;
     }
 
+    explicit Integral(const Natural& i, const bool _minus) {
+        deg = i.getRawDeg();
+        odds = i.getRawOdds();
+        minus = _minus;
+    }
+
     explicit Integral(const std::string& string_integral) {
         parser_foundation(string_integral);
     }
@@ -114,7 +120,6 @@ public:
 
     // <! ---------- Friend функционал ---------- !> //
 
-    friend Natural ABS_Z_N(const Integral&);
     friend Integral TRANS_N_Z(const Natural&);
     friend Natural TRANS_Z_N(const Integral&);
     friend Integral ADD_ZZ_Z(const Integral&, const Integral&);
@@ -157,9 +162,25 @@ public:
     bool operator==(const Integral& other) const { return odds == other.getRawOdds() && minus == other.getMinus(); }
     bool operator!=(const Integral& other) const { return !(*this == other); }
 
-    Natural& operator*(const int&);         // Для работы со скаляром
-    Natural& operator*(const uint64_t&);   // Для работы со степенями
-    Natural& operator*(const Natural&);   // Для работы с натуралом.
+    Integral& operator*(const int& d) {         // Для работы со скаляром
+        Natural n = Natural(odds, deg) * d;
+        odds = n.getRawOdds();
+        deg = n.getRawDeg();
+        return *this;
+    }
+
+    // Для работы с интегралом
+    Integral& operator*(const Integral& i) {
+        return MUL_ZZ_Z(i);
+    }
+
+    Integral& operator+(const Integral& i) {
+        return ADD_ZZ_Z(i);
+    }
+
+    Integral& operator-(const Integral& i) {
+        return SUB_ZZ_Z(i);
+    }
 
     Integral& operator/(const Integral& other) {     // Обычное деление
         return this->DIV_ZZ_Z(other);

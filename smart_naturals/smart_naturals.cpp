@@ -1,4 +1,5 @@
 #include "smart_naturals.h"
+#include <algorithm>
 
 /*
     Реализация методов класса Natural.
@@ -20,20 +21,10 @@ int Natural::COMM_NN_D(const Natural& n) const {
         return 2;
     else if (deg < n.getRawDeg())
         return 1;
-    else {
-        if (deg == 0u) return 0;
-        std::deque<uint8_t> temp_odds = n.getRawOdds();         // Скопируем, для избежания многочисл. копий в цикле
-        for (unsigned runner = 0u; runner < deg; runner++) { // Пройдёмся по разрядам, начиная слева.
-            if (odds.at(runner) != temp_odds.at(runner)) {
-                if (odds.at(runner) > temp_odds.at(runner))
-                    return 2;
-                else
-                    return 1;
-            }
-        }
-    }
+    else if (odds == n.getRawOdds())
+        return 0;
 
-    return 0;
+    return 1 + (int)(odds > n.getRawOdds());
 }
 
 
@@ -203,10 +194,16 @@ Natural& Natural::MUL_ND_N(const int& d) {
     if (d == 0) {
         MakeNull();
         return *this;
-    } else if (d == 1 || deg == 0) return *this;
-    else if (d == 10) {
-        odds.emplace_back(0);
-        deg++;
+    } else if (d == 1 || (deg == 1 && odds[0] == 0)) return *this;
+    else if (d % 10 == 0) {
+        int deg_d = -1;
+        int d_copy = d;
+        while (d_copy > 0) {
+            d_copy /= 10;
+            deg_d++;
+        }
+        deg += deg_d;
+        odds.resize(deg);
         return *this;
     }
 
@@ -248,7 +245,6 @@ Natural& Natural::MUL_Nk_N(const uint64_t& k) {
 */
 
 Natural& Natural::MUL_NN_N(const Natural& n) {
-
     Natural mul{};  // mul{} == Natural(0).
     std::deque<uint8_t> n_odds = n.getRawOdds();
 
@@ -266,8 +262,7 @@ Natural& Natural::MUL_NN_N(const Natural& n) {
 
 /*  [N - 9]
     Ковтун Александр
-    Краткое описание модуля...
-    Ссылки на документацию, использованную при разработке.
+    Вычитание *this на n * цифру d
 */
 
 Natural& Natural::SUB_NDN_N(const Natural& n, const int& d) {
@@ -277,7 +272,7 @@ Natural& Natural::SUB_NDN_N(const Natural& n, const int& d) {
         if (comparer == 2) {
             SUB_NN_N(temporary_nd);
         } else if (comparer == 1 || comparer == 0) {
-            *this = Natural{}; // return 0
+            MakeNull();
         }
     }
 
@@ -320,15 +315,19 @@ uint64_t Natural::DIV_NN_Dk(const Natural& n, const uint64_t& k) {
 */
 
 Natural& Natural::DIV_NN_N(const Natural& n) {
-    Natural first(*this), second(n), res("0"), znach("1");
+    Natural first(*this), res("0"), znach("1");
     uint64_t numb, step;
-    while (first.COMM_NN_D(second) != 1) { //Исполняется пока this >= n
-        numb = Natural(first).DIV_NN_Dk(second, 0); //Находиться первая цифра от деления this на n
-        znach = Natural(second).MUL_ND_N(numb); //Значение для поиска положения текущей цифры
+
+    if (n == Natural{"1"})
+        return *this;
+
+    while (first.COMM_NN_D(n) != 1) { //Исполняется пока this >= n
+        numb = Natural(first).DIV_NN_Dk(n, 0); //Находиться первая цифра от деления this на n
+        znach = Natural(n).MUL_ND_N(numb); //Значение для поиска положения текущей цифры
         step = 0;
         while (first.COMM_NN_D(znach.MUL_Nk_N(1)) == 2) step++;
         res.ADD_NN_N(Natural("1").MUL_Nk_N(step).MUL_ND_N(numb));
-        Natural a(Natural("1").MUL_Nk_N(step).MUL_NN_N(second));
+        Natural a(Natural("1").MUL_Nk_N(step).MUL_NN_N(n));
         first.SUB_NDN_N(a, numb);
         first.NZER_N_B();
     }
@@ -343,10 +342,8 @@ Natural& Natural::DIV_NN_N(const Natural& n) {
 */
 // [N - 12]
 Natural& Natural::MOD_NN_N(const Natural& n) {
-    // èñïîëüçîâàòü [N - 9][N - 11]
     Natural a(n), b(*this);
-    Natural Diver = DIV_NN_N(a);
-    *this = b.SUB_NN_N(a.MUL_NN_N(Diver));
+    *this = b.SUB_NN_N(a.MUL_NN_N(DIV_NN_N(a)));
     return *this;
 }
 
@@ -365,6 +362,7 @@ Natural& Natural::GCF_NN_N(const Natural& n) {
     *this = a;
     return *this;
 }
+
 
 /*  [N - 14]
     Тарабурин Александр
@@ -385,7 +383,6 @@ Natural& Natural::LCM_NN_N(const Natural& n) {
 
 
 int COMM_NN_D(const Natural& n1, const Natural& n2) {
-    // сравнение чисел как публичный метод класса - глупо.
     return n1.COMM_NN_D(n2);
 }
 Natural ADD_NN_N(const Natural& n1, const Natural& n2) {

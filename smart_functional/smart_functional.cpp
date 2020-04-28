@@ -73,39 +73,6 @@ std::string ParseStringForFraction(std::string src, size_t& _pos) {
 
     return numleft + '/' + src.substr(start_pos_right, _pos - start_pos_right);
 
-    //        if (num.empty()) return "";
-//        return num + '/' + '1';
-//    }
-//    size_t start_pos = 0u, end_pos = src.size();
-    //size_t pos_summer = 0u;
-    //string tempLeft = ParseStringForNums(src.substr(0u, pos_frac), _pos); pos_summer += _pos;
-    //string tempRight = ParseStringForNums(src.substr(pos_frac + 1), _pos); pos_summer += _pos;
-    //_pos = pos_summer + 1; // + '/'
-    //if (!tempLeft.empty() && !tempRight.empty())
-    //   return tempLeft + '/' + tempRight;
-    //return "";
-
-//    while (pos_frac != string::npos) {
-//        if (!tempLeft.empty() && !tempRight.empty()) {
-//            start_pos = pos_frac - tempLeft.size();
-//            end_pos = pos_frac + tempRight.size();
-//
-//            // Теперь мы должны сравнить найденные числа с РЕАЛЬНЫМИ символами справа и слева от знака '/'
-//            if (src.substr(start_pos, tempLeft.size()) == tempLeft &&
-//                src.substr(end_pos - tempRight.size(), tempRight.size()) == tempLeft) {
-//                    return src.substr(start_pos, tempLeft.size() + tempRight.size() + 1); // + 1 == + '/'
-//            }
-//            else {
-//                // Если нашли что-то не то
-//                // Пока не передаёт пустую строку удаляем лишнее.
-//                // Или пока не дойдём до '/'
-//            }
-//        }
-//        pos_frac = src.find(pos_frac + 1, '/');
-//    }
-//
-//    // Если не нашли - возвращаем пустую строку
-//    return "";
 }
 
 std::string ParseStringForPolynomial(std::string src, size_t& pos) {
@@ -115,6 +82,17 @@ std::string ParseStringForPolynomial(std::string src, size_t& pos) {
     while (pos != string::npos && pos < src.size()) {
         res += ParseStringForFraction(src.substr(pos), temp_pos);
         pos += temp_pos;
+        if (src[pos] == 'x') {
+            std::string additional;
+            if (pos < src.size() - 2 && src[pos + 1] == '^') {
+                if (isdigit(src[pos + 2])) {
+                    additional = string("^") + ParseStringForNums(src.substr(pos + 2), temp_pos);
+                    pos += additional.size();
+                }
+            }
+            res += string("x") + additional;
+            pos++;
+        }
 
         while (pos < src.size() && pos != string::npos && src.at(pos) != ' ')
             pos++; // может быть всякое: 13x^3 !pos на пробеле!
