@@ -124,8 +124,27 @@ std::ostream& operator<<(std::ostream& os, const Polynomial& p) {
 }
 
 std::istream& operator>>(std::istream& is,  Polynomial& p) {
-    string str;
-    getline(is, str,'\n');
+    std::string str;
+    char *s,f=' ';
+    s = (char*)malloc(1);
+    is >> s[0];
+    is >> noskipws;
+    uint64_t i = 1;
+    while (f != '\n') {      
+        is >> f;
+        if (f != '\n') {           
+            i++;
+            is.unget();
+            s = (char*)realloc(s, i * sizeof(char));
+            if(s[i]!=NULL)
+            is >> s[i-1];
+        }
+        else {
+            break;
+        }
+    }
+    str = s;
+    free(s);
     p = { str };
     return is;
 }
