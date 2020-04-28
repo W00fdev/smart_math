@@ -1,11 +1,12 @@
 #include "smart_functional_additional.h"
 
+
 std::ostream& operator<<(std::ostream& os, const Natural& n) {
     const auto data = n.getRawOdds();
     if (n.getRawDeg() > 0 && !data.empty()) {
         const uint64_t  offset = n.getRawDeg() % 3;
         int counter = 0; bool after_first = false;
-        if (offset == 0u)  {
+        if (offset == 0u) {
             after_first = true;
             counter = -1;
         }
@@ -13,7 +14,8 @@ std::ostream& operator<<(std::ostream& os, const Natural& n) {
             if (i != 0 && n.getRawDeg() > 3 && i == offset) {
                 os << "'";
                 after_first = true;
-            } else if (after_first) {
+            }
+            else if (after_first) {
                 counter++;
                 if (counter == 3) {
                     counter = 0;
@@ -26,7 +28,10 @@ std::ostream& operator<<(std::ostream& os, const Natural& n) {
     return os;
 }
 
-std::istream& operator>>(std::istream& is, const Natural&) {
+std::istream& operator>>(std::istream& is,  Natural& n) {
+    string str;
+    is >> str;
+    n = { str };
     return is;
 }
 
@@ -46,7 +51,8 @@ std::ostream& operator<<(std::ostream& os, const Integral& i) {
             if (ii != 0 && i.getRawDeg() > 3 && ii == offset) {
                 os << "'";
                 after_first = true;
-            } else if (after_first) {
+            }
+            else if (after_first) {
                 counter++;
                 if (counter == 3) {
                     counter = 0;
@@ -59,7 +65,10 @@ std::ostream& operator<<(std::ostream& os, const Integral& i) {
     return os;
 }
 
-std::istream& operator>>(std::istream& is, const Integral&) {
+std::istream& operator>>(std::istream& is,  Integral& in) {
+    string str;
+    is >> str;
+    in = { str };
     return is;
 }
 
@@ -67,20 +76,24 @@ std::istream& operator>>(std::istream& is, const Integral&) {
 
 std::ostream& operator<<(std::ostream& os, const Rational& r) {
 
-    if (r.getDenominator() != Natural{"1"}) {
+    if (r.getDenominator() != Natural{ "1" }) {
         os << "(";
         os << r.getNumerator();
         os << '/';
         os << r.getDenominator();
         os << ")";
-    } else {
+    }
+    else {
         os << r.getNumerator();
     }
 
     return os;
 }
 
-std::istream& operator>>(std::istream& is, const Rational&) {
+std::istream& operator>>(std::istream& is,  Rational& r) {
+    string str;
+    is >> str;
+    r = { str };
     return is;
 }
 
@@ -90,7 +103,7 @@ std::ostream& operator<<(std::ostream& os, const Polynomial& p) {
     if (p.getRawDeg() > 0) {
         int64_t deg = p.getRawDeg() - 1;
         bool first = true;
-        for (const auto& odd: p.getRawOdds()) {
+        for (const auto& odd : p.getRawOdds()) {
             if (odd != Rational("0")) {
                 if (!first)
                     os << " + ";
@@ -110,6 +123,9 @@ std::ostream& operator<<(std::ostream& os, const Polynomial& p) {
     return os;
 }
 
-std::istream& operator>>(std::istream& is, const Polynomial& p) {
+std::istream& operator>>(std::istream& is,  Polynomial& p) {
+    string str;
+    getline(is, str,'\n');
+    p = { str };
     return is;
 }
