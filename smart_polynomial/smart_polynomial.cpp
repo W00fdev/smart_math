@@ -353,7 +353,7 @@ Polynomial& Polynomial::DER_PP_P() {
 */
 
 Polynomial& Polynomial::NMR_P_P() {
-    if (*this != Polynomial{ 0 } && deg > 1) {
+    if (deg > 1) {
         Polynomial tmp_this(*this);
         tmp_this.DER_PP_P();
         tmp_this.GCF_PP_P(*this);
