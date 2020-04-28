@@ -125,19 +125,19 @@ std::ostream& operator<<(std::ostream& os, const Polynomial& p) {
 
 std::istream& operator>>(std::istream& is,  Polynomial& p) {
     std::string str;
-    char *s,f=' ';
+    char* s, f = ' ';
     s = (char*)malloc(1);
     is >> s[0];
     is >> noskipws;
     uint64_t i = 1;
-    while (f != '\n') {      
+    while (true) {
         is >> f;
-        if (f != '\n') {           
+        if (f != '\n') {
             i++;
             is.unget();
             s = (char*)realloc(s, i * sizeof(char));
-            if(s[i]!=NULL)
-            is >> s[i-1];
+            if (s[i] != NULL)
+                is >> s[i - 1];
         }
         else {
             break;
