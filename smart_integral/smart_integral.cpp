@@ -183,7 +183,7 @@ Integral& Integral::MOD_ZZ_Z(const Integral& i) {
     Natural modular_this(ABS_Z_N());
     modular_this.DIV_NN_N(modular_other);
     *this = ABS_Z_N().SUB_NN_N(modular_this.MUL_NN_N(modular_other));
-    minus = final_minus;
+    minus = false;
     return *this;
 }
 
