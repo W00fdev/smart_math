@@ -66,7 +66,7 @@ std::ostream& operator<<(std::ostream& os, const Integral& i) {
 }
 
 std::istream& operator>>(std::istream& is,  Integral& in) {
-    string str;
+    std::string str;
     is >> str;
     in = { str };
     return is;
@@ -91,7 +91,7 @@ std::ostream& operator<<(std::ostream& os, const Rational& r) {
 }
 
 std::istream& operator>>(std::istream& is,  Rational& r) {
-    string str;
+    std::string str;
     is >> str;
     r = { str };
     return is;
@@ -128,7 +128,7 @@ std::istream& operator>>(std::istream& is,  Polynomial& p) {
     char* s, f = ' ';
     s = (char*)malloc(1);
     is >> s[0];
-    is >> noskipws;
+    is >> std::noskipws;
     uint64_t i = 1;
     while (true) {
         is >> f;
